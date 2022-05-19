@@ -12,17 +12,17 @@ namespace nservermod
     { //Add a way of respawning shadow orbs on the corruption
         public override bool CanPlace(int i, int j, int type)
         {
-            return nservermod.IsInSingleplayer || type == 13 || (j >= Main.worldSurface - 20 && (type != TileID.Containers && type != TileID.Containers2) || ((type == TileID.Torches || type == TileID.Platforms || type == TileID.Rope || type == TileID.SilkRope || type == TileID.VineRope || type == TileID.WebRope || type == 29 || type == TileID.Campfire) && !Main.wallHouse[Main.tile[i, j].wall]));
+            return nservermod.IsInSingleplayer || nservermod.LocalPlayerHasPermissionToBuild() || type == 13 || (j >= Main.worldSurface - 20 && (type != TileID.Containers && type != TileID.Containers2) || ((type == TileID.Torches || type == TileID.Platforms || type == TileID.Rope || type == TileID.SilkRope || type == TileID.VineRope || type == TileID.WebRope || type == 29 || type == TileID.Campfire) && !Main.wallHouse[Main.tile[i, j].wall]));
         }
 
         public override bool CanExplode(int i, int j, int type)
         {
-            return nservermod.IsInSingleplayer || (j >= Main.worldSurface - 20 && !TileID.Sets.HousingWalls[type]);
+            return nservermod.IsInSingleplayer || nservermod.LocalPlayerHasPermissionToBuild() || (j >= Main.worldSurface - 20 && !TileID.Sets.HousingWalls[type]);
         }
 
         public override bool CanKillTile(int i, int j, int type, ref bool blockDamaged)
         {
-            if (nservermod.IsInSingleplayer)
+            if (nservermod.IsInSingleplayer || nservermod.LocalPlayerHasPermissionToBuild())
                 return true;
             switch (type)
             {

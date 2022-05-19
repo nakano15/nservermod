@@ -12,12 +12,12 @@ namespace nservermod
     {
         public override bool CanExplode(int i, int j, int type)
         {
-            return nservermod.IsInSingleplayer;
+            return nservermod.IsInSingleplayer || nservermod.LocalPlayerHasPermissionToBuild();
         }
 
         public override void KillWall(int i, int j, int type, ref bool fail)
         {
-            fail = nservermod.IsInSingleplayer || j < Main.worldSurface - 20;
+            fail = nservermod.IsInSingleplayer || nservermod.LocalPlayerHasPermissionToBuild() || j < Main.worldSurface - 20;
         }
     }
 }

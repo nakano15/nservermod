@@ -22,6 +22,8 @@ namespace nservermod
         public static byte GetHourValue { get { return NewHourVal; } }
         public static byte GetMinuteValue { get { return NewMinuteVal; } }
         public static byte WofSpawnMessages = 255;
+        private static Mod HerosMod;
+        private const string ModifyWorldPermissionString = "ModifyWorld";
 
         public override void Load()
         {
@@ -34,6 +36,30 @@ namespace nservermod
         {
             instance = null;
             WorldMod.OnUnload();
+        }
+
+        public override void PostSetupContent()
+        {
+            HerosMod = ModLoader.GetMod("HEROsMod");
+            if (HerosMod != null)
+                HerosMod.Call("AddPermission", ModifyWorldPermissionString, "Allow Modifying World", new Action<bool>(delegate(bool b) {  }));
+        }
+
+        public static bool PlayerHasPermissionToBuildAndDestroy(Player p)
+        {
+            return PlayerHasPermissionToBuildAndDestroy(p.whoAmI);
+        }
+
+        public static bool PlayerHasPermissionToBuildAndDestroy(int i)
+        {
+            if (HerosMod == null)
+                return false;
+            return (bool)HerosMod.Call("HasPermission", i, ModifyWorldPermissionString);
+        }
+
+        public static bool LocalPlayerHasPermissionToBuild()
+        {
+            return Main.netMode == 1 && PlayerHasPermissionToBuildAndDestroy(Main.myPlayer);
         }
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)
