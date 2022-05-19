@@ -1,0 +1,2 @@
+This mod is used to setup some rules when playing on Raccoon Server.
+It will never activate its effects on singleplayer.
