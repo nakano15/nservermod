@@ -11,7 +11,7 @@ namespace nservermod
         {
             if (nservermod.IsInSingleplayer)
                 return true;
-            if(item.createWall > 0)
+            if(!nservermod.PlayerHasPermissionToBuildAndDestroy(player.whoAmI) && item.createWall > 0)
                 return player.position.Y >= Main.worldSurface * 16;
             if (item.type == ItemID.WaterBucket || item.type == ItemID.LavaBucket || item.type == ItemID.HoneyBucket || item.type == ItemID.BottomlessBucket || item.type == ItemID.EmptyBucket)
             {
