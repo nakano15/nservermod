@@ -22,6 +22,7 @@ namespace nservermod
         public static byte GetHourValue { get { return NewHourVal; } }
         public static byte GetMinuteValue { get { return NewMinuteVal; } }
         public static byte WofSpawnMessages = 255;
+        public static byte OnlinePlayers = 0;
         private static Mod HerosMod;
         private const string ModifyWorldPermissionString = "ModifyWorld";
 
@@ -69,6 +70,12 @@ namespace nservermod
 
         public override void PreUpdateEntities()
         {
+            OnlinePlayers = 0;
+            for(int i = 0; i < 255; i++)
+            {
+                if (Main.player[i].active)
+                    OnlinePlayers++;
+            }
             LastTime = CurrentTime;
             CurrentTime = DateTime.Now;
             if (CurrentTime.Hour != LastTime.Hour)
@@ -101,19 +108,19 @@ namespace nservermod
                 WofSpawnMessages++;
                 if (WofSpawnMessages == 10)
                 {
-                    SendMessage("Wall of Flesh: *Nhac!*", 255, 0, 0);
+                    SendMessage("<Wall of Flesh> *Nhac!*", 255, 0, 0);
                 }
                 if (WofSpawnMessages == 70)
                 {
-                    SendMessage("Wall of Flesh: *Crunch, Munch, Munch, Munch.*", 255, 0, 0);
+                    SendMessage("<Wall of Flesh> *Crunch, Munch, Munch, Munch.*", 255, 0, 0);
                 }
                 if (WofSpawnMessages == 130)
                 {
-                    SendMessage("Wall of Flesh: *Gulp.*", 255, 0, 0);
+                    SendMessage("<Wall of Flesh> *Gulp.*", 255, 0, 0);
                 }
                 if (WofSpawnMessages == 190)
                 {
-                    SendMessage("Wall of Flesh: *Buurp!*", 255, 0, 0);
+                    SendMessage("<Wall of Flesh> *Buurp!*", 255, 0, 0);
                     for(byte i = 0; i < 255; i++)
                     {
                         if (Main.player[i].active && Main.player[i].ZoneUnderworldHeight)
@@ -121,6 +128,10 @@ namespace nservermod
                             Main.player[i].AddBuff(Terraria.ID.BuffID.Poisoned, 60 * 60, false);
                         }
                     }
+                }
+                if (WofSpawnMessages == 250)
+                {
+                    SendMessage("*Don't feed the wall of flesh right now.*", 255, 0, 0);
                 }
             }
         }

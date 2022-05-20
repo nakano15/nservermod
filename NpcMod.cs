@@ -36,6 +36,15 @@ namespace nservermod
                 case NPCID.SpikeBall:
                     npc.damage += 30;
                     break;
+                case NPCID.Werewolf:
+                    if (Main.rand.Next(100) == 0)
+                        npc.GivenName = "Furry";
+                    if (!Main.hardMode)
+                    {
+                        npc.lifeMax = 500;
+                        npc.defense = 8;
+                    }
+                    break;
             }
         }
 
@@ -83,12 +92,12 @@ namespace nservermod
 
         public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
         {
-            if(Main.moonPhase == 0 && !spawnInfo.playerInTown)
-            {
-                pool.Add(NPCID.Werewolf, 1f / 30);
-            }
             if (!Main.hardMode)
             {
+                if (Main.moonPhase == 0 && !spawnInfo.playerInTown && !NPC.AnyNPCs(NPCID.Werewolf))
+                {
+                    pool.Add(NPCID.Werewolf, 1f / 30);
+                }
                 if (!spawnInfo.playerInTown)
                 {
                     if (Main.raining && spawnInfo.player.ZoneSnow)
