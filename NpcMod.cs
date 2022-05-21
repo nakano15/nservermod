@@ -18,7 +18,7 @@ namespace nservermod
             {
                 case NPCID.SkeletronHead:
                 case NPCID.SkeletronHand:
-                    npc.lifeMax *= 5;
+                    npc.lifeMax *= 3;
                     npc.damage += 20;
                     npc.defense += 10;
                     break;
@@ -28,7 +28,7 @@ namespace nservermod
                 case NPCID.AngryBonesBigMuscle:
                 case NPCID.DarkCaster:
                 case NPCID.CursedSkull:
-                    npc.lifeMax *= 5;
+                    npc.lifeMax *= 3;
                     npc.damage += 10;
                     npc.defense += 5;
                     break;
@@ -144,10 +144,10 @@ namespace nservermod
 
         public override void NPCLoot(NPC npc)
         {
-            if(npc.type == Terraria.ID.NPCID.EyeofCthulhu && NPC.downedBoss3 && Main.rand.Next(100) == 0)
+            /*if(npc.type == Terraria.ID.NPCID.EyeofCthulhu && NPC.downedBoss3 && Main.rand.Next(100) == 0)
             {
                 NPC.SpawnOnPlayer(npc.target, NPCID.Spazmatism);
-            }
+            }*/
         }
 
         public bool IsEngagingNpc(int NpcID, Player player)

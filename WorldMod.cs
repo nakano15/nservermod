@@ -88,6 +88,8 @@ namespace nservermod
         {
             if (TreePlantingPosition != null) TreePlantingPosition.Clear();
             TreePlantingPosition = null;
+            if (DresserLoot != null) DresserLoot.Clear();
+            DresserLoot = null;
         }
 
         public override void Initialize()

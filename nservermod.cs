@@ -17,7 +17,7 @@ namespace nservermod
                 return instance.GetPacket();
             }
         }
-        public static DateTime LastTime = new DateTime(), CurrentTime = new DateTime();
+        public static DateTime CurrentTime = new DateTime();
         private static byte NewHourVal = 255, NewMinuteVal = 255;
         public static byte GetHourValue { get { return NewHourVal; } }
         public static byte GetMinuteValue { get { return NewMinuteVal; } }
@@ -30,7 +30,8 @@ namespace nservermod
         {
             instance = this;
             _SingleplayerMode = Main.netMode == 0;
-            CurrentTime = LastTime = DateTime.Now;
+            WorldMod.InitializeDresserLoots();
+            CurrentTime = DateTime.Now;
         }
 
         public override void Unload()
@@ -76,7 +77,7 @@ namespace nservermod
                 if (Main.player[i].active)
                     OnlinePlayers++;
             }
-            LastTime = CurrentTime;
+            DateTime LastTime = CurrentTime;
             CurrentTime = DateTime.Now;
             if (CurrentTime.Hour != LastTime.Hour)
                 NewHourVal = (byte)CurrentTime.Hour;
