@@ -11,6 +11,70 @@ namespace nservermod
 {
     public class WorldMod : ModWorld
     {
+        private static bool? EnableChestRespawn = null, EnableOreRespawn = null, EnableLifeCrystalRespawn = null, EnableDungeonReset = null, EnableWallOfFlesh = null,
+            EnableSpiderWebRespawn = null, EnableShadowOrbRespawn = null, EnablePotsRespawn = null, EnableEnchantedSwordRespawn = null, EnableSurfaceProtection = null,
+            EnableCustomModSpawns = null, EnableHarderDungeonAndSkeletron = null;
+        public static bool? IsChestRespawnEnabled
+        {
+            get { if (EnableChestRespawn.HasValue) return EnableChestRespawn.Value; return Main.netMode == 2; }
+            set { EnableChestRespawn = value; }
+        }
+        public static bool? IsOreRespawnEnabled
+        {
+            get { if (EnableOreRespawn.HasValue) return EnableOreRespawn.Value; return Main.netMode == 2; }
+            set { EnableOreRespawn = value; }
+        }
+        public static bool? IsLCRespawnEnabled
+        {
+            get { if (EnableLifeCrystalRespawn.HasValue) return EnableLifeCrystalRespawn.Value; return Main.netMode == 2; }
+            set { EnableLifeCrystalRespawn = value; }
+        }
+        public static bool? IsDungeonResetEnabled
+        {
+            get { if (EnableDungeonReset.HasValue) return EnableDungeonReset.Value; return Main.netMode == 2; }
+            set { EnableDungeonReset = value; }
+        }
+        public static bool? IsWofEnabled
+        {
+            get { if (EnableWallOfFlesh.HasValue) return EnableWallOfFlesh.Value; return Main.netMode == 0; }
+            set { EnableWallOfFlesh = value; }
+        }
+        public static bool? IsSpiderWebRespawnEnabled
+        {
+            get { if (EnableSpiderWebRespawn.HasValue) return EnableSpiderWebRespawn.Value; return Main.netMode == 2; }
+            set { EnableSpiderWebRespawn = value; }
+        }
+        public static bool? IsShadowOrbRespawnEnabled
+        {
+            get { if (EnableShadowOrbRespawn.HasValue) return EnableShadowOrbRespawn.Value; return Main.netMode == 2; }
+            set { EnableShadowOrbRespawn = value; }
+        }
+        public static bool? IsPotsRespawnEnabled
+        {
+            get { if (EnablePotsRespawn.HasValue) return EnablePotsRespawn.Value; return Main.netMode == 2; }
+            set { EnablePotsRespawn = value; }
+        }
+        public static bool? IsEnchantedSwordRespawnEnabled
+        {
+            get { if (EnableEnchantedSwordRespawn.HasValue) return EnableEnchantedSwordRespawn.Value; return Main.netMode == 2; }
+            set { EnableEnchantedSwordRespawn = value; }
+        }
+        public static bool? IsSurfaceProtectionEnabled
+        {
+            get { if (EnableSurfaceProtection.HasValue) return EnableSurfaceProtection.Value; return Main.netMode == 2; }
+            set { EnableSurfaceProtection = value; }
+        }
+        public static bool? IsHarderDungeonAndSkeleEnabled
+        {
+            get { if (EnableHarderDungeonAndSkeletron.HasValue) return EnableHarderDungeonAndSkeletron.Value; return Main.netMode == 2; }
+            set { EnableHarderDungeonAndSkeletron = value; }
+        }
+        public static bool? IsCustomMobSpawnsEnabled
+        {
+            get { if (EnableCustomModSpawns.HasValue) return EnableCustomModSpawns.Value; return Main.netMode == 2; }
+            set { EnableCustomModSpawns = value; }
+        }
+
         private static List<Point> TreePlantingPosition = new List<Point>();
         private static List<int[]> DresserLoot = new List<int[]>();
 
@@ -105,38 +169,60 @@ namespace nservermod
 
         public override void PreUpdate()
         {
-            if (Main.netMode < 2)
-                return;
-            if (nservermod.GetHourValue < 255)
+            //if (Main.netMode < 2)
+            //    return;
+            bool Server = Main.netMode == 2;
+            UpdateHourlyRespawn();
+            if (nservermod.GetMinuteValue < 255 && Main.rand.Next(3) == 0)
             {
-                RefillChests();
-            }
-            if (nservermod.GetMinuteValue < 255 && (nservermod.OnlinePlayers > 0 || Main.rand.Next(3) == 0))
-            {
-                if (nservermod.GetMinuteValue % 10 == 4)
+                if (IsSpiderWebRespawnEnabled.Value && nservermod.GetMinuteValue % 10 == 4)
                 {
                     RespawnSpiderWebs();
                 }
-                if (nservermod.GetMinuteValue % 15 == 7)
+                if (IsOreRespawnEnabled.Value && nservermod.GetMinuteValue % 15 == 7)
                 {
                     RespawnOres();
                 }
-                if (nservermod.GetMinuteValue % 5 == 3)
+                if (IsPotsRespawnEnabled.Value && nservermod.GetMinuteValue % 5 == 3)
                 {
                     PlaceNewPots();
                 }
-                if (nservermod.GetMinuteValue % 15 == 11)
+                if (IsShadowOrbRespawnEnabled.Value && nservermod.GetMinuteValue % 15 == 11)
                 {
                     TryPlacingShadowOrb();
                 }
-                if (nservermod.GetMinuteValue == 0 || nservermod.GetMinuteValue == 30)
+                if (IsEnchantedSwordRespawnEnabled.Value && nservermod.GetMinuteValue % 30 == 0)
                 {
                     TryPlacingEnchantedSword();
                 }
             }
-            if (Main.rand.Next(250) == 0 && (nservermod.OnlinePlayers > 0 || Main.rand.Next(3) == 0))
+            if (Main.rand.Next(250) == 0 && IsLCRespawnEnabled.Value)
                 PlaceLifeCrystal();
-            if (NPC.downedBoss3)
+            while (TreePlantingPosition.Count > 0)
+            {
+                int x = TreePlantingPosition[0].X, y = TreePlantingPosition[0].Y;
+                Tile tile = Main.tile[x, y + 1];
+                int Type = 20, Style = 0;
+                if (tile.active())
+                {
+                    TileLoader.SaplingGrowthType(tile.type, ref Type, ref Style);
+                }
+                TreePlantingPosition.RemoveAt(0);
+                TileObject to;
+                if (TileObject.CanPlace(x, y, Type, Style, 1, out to) && TileObject.Place(to) && Main.netMode > 0)
+                {
+                    NetMessage.SendTileRange(Main.myPlayer, x, y, 1, 1);
+                }
+            }
+        }
+
+        public static void UpdateHourlyRespawn()
+        {
+            if (nservermod.GetHourValue < 255 && IsChestRespawnEnabled.Value)
+            {
+                RefillChests();
+            }
+            if (NPC.downedBoss3 && IsDungeonResetEnabled.Value)
             {
                 if (nservermod.GetMinuteValue == 55 && nservermod.GetHourValue < 255 && nservermod.GetHourValue % 2 == 1)
                 {
@@ -162,22 +248,6 @@ namespace nservermod
                             break;
                         }
                     }
-                }
-            }
-            while (TreePlantingPosition.Count > 0)
-            {
-                int x = TreePlantingPosition[0].X, y = TreePlantingPosition[0].Y;
-                Tile tile = Main.tile[x, y + 1];
-                int Type = 20, Style = 0;
-                if (tile.active())
-                {
-                    TileLoader.SaplingGrowthType(tile.type, ref Type, ref Style);
-                }
-                TreePlantingPosition.RemoveAt(0);
-                TileObject to;
-                if (TileObject.CanPlace(x, y, Type, Style, 1, out to) && TileObject.Place(to) && Main.netMode > 0)
-                {
-                    NetMessage.SendTileRange(Main.myPlayer, x, y, 1, 1);
                 }
             }
         }
@@ -282,7 +352,7 @@ namespace nservermod
             }
         }
 
-        private void RefillChests()
+        private static void RefillChests()
         {
             List<byte> HellChestIDs = new List<byte>();
             {

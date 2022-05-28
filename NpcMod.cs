@@ -14,13 +14,17 @@ namespace nservermod
         {
             if (nservermod.IsInSingleplayer)
                 return;
+            bool HarderDungeon = WorldMod.IsHarderDungeonAndSkeleEnabled.Value;
             switch (npc.type)
             {
                 case NPCID.SkeletronHead:
                 case NPCID.SkeletronHand:
-                    npc.lifeMax *= 3;
-                    npc.damage += 20;
-                    npc.defense += 10;
+                    if (HarderDungeon)
+                    {
+                        npc.lifeMax *= 3;
+                        npc.damage += 20;
+                        npc.defense += 10;
+                    }
                     break;
                 case NPCID.AngryBones:
                 case NPCID.AngryBonesBig:
@@ -28,13 +32,19 @@ namespace nservermod
                 case NPCID.AngryBonesBigMuscle:
                 case NPCID.DarkCaster:
                 case NPCID.CursedSkull:
-                    npc.lifeMax *= 3;
-                    npc.damage += 10;
-                    npc.defense += 5;
+                    if (HarderDungeon)
+                    {
+                        npc.lifeMax *= 3;
+                        npc.damage += 10;
+                        npc.defense += 5;
+                    }
                     break;
                 case NPCID.BlazingWheel:
                 case NPCID.SpikeBall:
-                    npc.damage += 30;
+                    if (HarderDungeon)
+                    {
+                        npc.damage += 30;
+                    }
                     break;
                 case NPCID.Werewolf:
                     if (Main.rand.Next(100) == 0)
@@ -50,15 +60,18 @@ namespace nservermod
 
         public override void PostAI(NPC npc)
         {
-            if (nservermod.IsInSingleplayer || Main.netMode == 1)
+            if (Main.netMode <= 1)
                 return;
             switch (npc.type)
             {
-                case NPCID.WallofFlesh: //Remove or disable this case script to enable Wall of Flesh from appearing in the world.
+                case NPCID.WallofFlesh:
                     {
-                        npc.active = false;
-                        npc.netUpdate = true;
-                        nservermod.WofSpawnMessages = 0;
+                        if (!WorldMod.IsWofEnabled.Value)
+                        {
+                            npc.active = false;
+                            npc.netUpdate = true;
+                            nservermod.WofSpawnMessages = 0;
+                        }
                     }
                     break;
                 case NPCID.SkeletronHead:
@@ -92,6 +105,7 @@ namespace nservermod
 
         public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
         {
+            if (!WorldMod.IsCustomMobSpawnsEnabled.Value) return;
             if (!Main.hardMode)
             {
                 if (Main.moonPhase == 0 && !spawnInfo.playerInTown && !NPC.AnyNPCs(NPCID.Werewolf))

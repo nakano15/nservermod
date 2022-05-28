@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.ModLoader;
+using Terraria.UI;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace nservermod
 {
@@ -25,6 +28,7 @@ namespace nservermod
         public static byte OnlinePlayers = 0;
         private static Mod HerosMod;
         private const string ModifyWorldPermissionString = "ModifyWorld";
+        public static Texture2D worldsettingbuttontexture; 
 
         public override void Load()
         {
@@ -32,12 +36,22 @@ namespace nservermod
             _SingleplayerMode = Main.netMode == 0;
             WorldMod.InitializeDresserLoots();
             CurrentTime = DateTime.Now;
+            if (!Main.dedServ)
+            {
+                worldsettingbuttontexture = GetTexture("WorldSettingButton");
+
+                LoadInterfaces();
+            }
         }
 
         public override void Unload()
         {
             instance = null;
             WorldMod.OnUnload();
+            if (!Main.dedServ)
+            {
+                UnloadInterfaces();
+            }
         }
 
         public override void PostSetupContent()
@@ -88,6 +102,29 @@ namespace nservermod
             else
                 NewMinuteVal = 255;
             WofSpawnMessageTimes();
+        }
+
+        private static LegacyGameInterfaceLayer worldsettingsui;
+
+        private static void LoadInterfaces()
+        {
+            worldsettingsui = new LegacyGameInterfaceLayer("N Server Mod: World Setting", WorldSettingsInterface.Draw, InterfaceScaleType.UI);
+        }
+
+        private static void UnloadInterfaces()
+        {
+            worldsettingsui = null;
+        }
+
+        public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
+        {
+            layers.Insert(20, worldsettingsui);
+        }
+
+        public override void MidUpdateTimeWorld()
+        {
+            if (!IsInSingleplayer && OnlinePlayers == 0)
+                WorldMod.UpdateHourlyRespawn();
         }
 
         public static void SendMessage(string Message, byte R = 255, byte G = 255, byte B = 255)
