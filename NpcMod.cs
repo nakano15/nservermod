@@ -54,7 +54,7 @@ namespace nservermod
                 return;
             switch (npc.type)
             {
-                case NPCID.WallofFlesh:
+                case NPCID.WallofFlesh: //Remove or disable this case script to enable Wall of Flesh from appearing in the world.
                     {
                         npc.active = false;
                         npc.netUpdate = true;
