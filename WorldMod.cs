@@ -16,6 +16,7 @@ namespace nservermod
 
         public static void InitializeDresserLoots()
         {
+            DresserLoot = new List<int[]>();
             AddDresserLoots(ItemID.SunMask);
             AddDresserLoots(ItemID.MoonMask);
             AddDresserLoots(ItemID.BunnyHood);
