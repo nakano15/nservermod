@@ -23,4 +23,4 @@ That will require that you be able to compile a mod, though.
 
 Without Bisect Hosting partnership, this mod woudln't exist.<br>
 If you want to get them to host a server for you, you can get 25% off on your first month by 
-using "nakano15" code. Access http://www.bisecthosting.com/nakano15 to get your own server.
+using "nakano15" code. <br>Access http://www.bisecthosting.com/nakano15 to get your own server.
