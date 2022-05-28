@@ -15,4 +15,10 @@ It makes so: <br>
 
 Don't steal the mod scripts. If you want to try making a mod based on this, reach me first.
 
+The mod has support to Hero's Mod. Giving the permission of "Allow World Building", allows characters to build on the surface.
+Use that wiselly.
+
+If you want to enable being able to fight the Wall of Flesh, you will need to remove the script disabling it on NpcMod.cs.
+That will require that you be able to compile a mod, though.
+
 Without Bisect Hosting partnership, this mod woudln't exist. Sadly it didn't worked.
