@@ -6,6 +6,7 @@ using System.Text;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace nservermod
 {
@@ -77,6 +78,12 @@ namespace nservermod
 
         private static List<Point> TreePlantingPosition = new List<Point>();
         private static List<int[]> DresserLoot = new List<int[]>();
+
+        public static void InitializeWorldMod()
+        {
+            TreePlantingPosition = new List<Point>();
+            InitializeDresserLoots();
+        }
 
         public static void InitializeDresserLoots()
         {

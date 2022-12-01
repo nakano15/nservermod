@@ -34,7 +34,7 @@ namespace nservermod
         {
             instance = this;
             _SingleplayerMode = Main.netMode == 0;
-            WorldMod.InitializeDresserLoots();
+            WorldMod.InitializeWorldMod();
             CurrentTime = DateTime.Now;
             if (!Main.dedServ)
             {
